@@ -1,0 +1,82 @@
+% main.tex
+
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{reviewresponse} % Load your custom style file
+
+% Optional page setup
+\usepackage{fullpage}
+
+% Metadata: Paper ID and Title (no author info for double-blind)
+\newcommand{\paperid}{JESTIE-2025-0114}
+\newcommand{\papertitle}{Reinforcement Learning-Based Control of Voltage-Forming Grid Inverters with Arbitrary Loads}
+
+% Hyperlinks for refs
+\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Response to Reviewers for Paper ID \paperid}}
+\end{center}
+
+\begin{center}
+    {\large \textit{\papertitle}}
+\end{center}
+
+\vspace{1em}
+
+\section*{Introductory Letter}
+We sincerely thank the editors and reviewers for their careful evaluation and insightful comments on our manuscript. Below we provide point-by-point responses to all comments and detail revisions made.\\
+
+\noindent With best regards,\\
+The authors \\
+{John Doe, Jane Doe}
+
+% --- Reviewer 1 ---
+\reviewersection[Reviewer 1]{Comments on methodology, theory, and experiments.}
+
+\begin{question}[q:method]
+What kind of fault do you consider in this grid-forming application?
+\end{question}
+\begin{answer}[a:method]
+New experiments addressing load shedding, black start, and shutdown scenarios were added as detailed in the revised manuscript. Other fault types, such as cable or component failure, are identified as important future work.
+\end{answer}
+
+\begin{question}[q:params]
+What are the controller parameters?
+\end{question}
+\begin{answer}[a:params]
+The controller uses ANN weights trained with the DDPG algorithm; this is now described extensively in Section III.A for reproducibility.
+\end{answer}
+
+% --- Reviewer 2 ---
+\reviewersection[Reviewer 2]{Comments on implementation and experimental setup.}
+
+\begin{question}[q:hardware]
+Section IIA only describes hardware configuration but not CPU or dSPACE implementation. Please elaborate.
+\end{question}
+\begin{answer}[a:hardware]
+Details of controller implementation including MATLAB Simulink and Xilinx FPGA methods are now added in Section II.A, explaining real-time execution aspects.
+% Example cross-reference usage
+Please refer to \qref{q:method} and \aref{a:hardware} for detailed answers on fault scenarios and hardware implementation.
+\end{answer}
+
+% --- Reviewer 3 ---
+\reviewersection[Reviewer 3]{General comments and meta remarks.}
+
+\begin{question}
+Please explain the concept of actor-critic-based implementation.
+\end{question}
+\begin{answer}
+Section III.A now provides a full description of the actor-critic framework including ANN training and control policy realization.
+\end{answer}
+
+\vspace{2em}
+
+\section*{Closing Statement}
+We hope the revised manuscript addresses all concerns and meets the journal's criteria. We appreciate the opportunity to improve our work thanks to the constructive feedback.
+
+% Author information deliberately omitted for double-blind review
+
+\end{document}

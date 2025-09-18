@@ -1,0 +1,80 @@
+% reviewresponse.sty
+
+\ProvidesPackage{reviewresponse}[2025/09/18 Review response environments]
+
+% Required packages
+\RequirePackage{xifthen}
+\RequirePackage{xcolor}
+\RequirePackage{mdframed}
+
+% Reviewer (or Editor) counter (for main sections)
+\newcounter{reviewer}
+\renewcommand{\thereviewer}{\arabic{reviewer}}
+
+% Per-reviewer comment counter
+\newcounter{revcomment}[reviewer]
+\renewcommand{\therevcomment}{\thereviewer.\arabic{revcomment}}
+
+% Reviewer section environment
+\newcommand{\reviewersection}[2][]{%
+  \stepcounter{reviewer}%
+  \setcounter{revcomment}{0}%
+  \section*{Editor / Reviewer~\thereviewer%
+    \ifthenelse{\equal{#1}{}}{}{~(#1)}%
+  }%
+  {\small \emph{#2}}
+}
+
+% Question environment (boxed, label optional)
+\newenvironment{question}[1][]%
+{%
+  \refstepcounter{revcomment}%
+  \begin{mdframed}[backgroundcolor=gray!10, linecolor=gray!60, topline=true, bottomline=true, leftline=true, rightline=true]%
+  \textbf{Question~\therevcomment:}%
+  \ifthenelse{\equal{#1}{}}{}{%
+    \label{#1}%
+  }%
+  \par
+}
+{
+  \end{mdframed}
+}
+
+% Answer environment (boxed, label optional)
+\newenvironment{answer}[1][]%
+{%
+  \begin{mdframed}[backgroundcolor=blue!5, linecolor=blue!30, topline=true, bottomline=true, leftline=true, rightline=true]%
+  \textbf{Answer~\therevcomment:}%
+  \ifthenelse{\equal{#1}{}}{}{%
+    \label{#1}%
+  }%
+  \par
+}
+{
+  \end{mdframed}
+}
+
+% Reference command for questions/answers
+\newcommand{\qref}[1]{Question~\ref{#1}}
+\newcommand{\aref}[1]{Answer~\ref{#1}}
+
+% Utility: short Q/A for tight comments
+\newcommand{\shortquestion}[2][]{%
+  \refstepcounter{revcomment}%
+  \textbf{Question~\therevcomment:}%
+  \ifthenelse{\equal{#1}{}}{}{%
+    \label{#1}%
+  }%
+  {#2}
+  \par
+}
+\newcommand{\shortanswer}[2][]{%
+  \textbf{Answer~\therevcomment:}%
+  \ifthenelse{\equal{#1}{}}{}{%
+    \label{#1}%
+  }%
+  {#2}
+  \par
+}
+
+% End of reviewresponse.sty
