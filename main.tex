@@ -46,13 +46,30 @@ The authors \\
 {(Sheldon Cooper, Leonard Hofstadter, and Amy Farrah Fowler)}
 
 % --- Editorial Level ---
-\reviewersection{Editor-in-Chief}
+\editorsection{Editor-in-Chief}
 
 \begin{question}[q:agreement]
 How does your approach interact with social protocols such as the Roommate Agreement and the RA Appendix Q (Thermostat Clause)?
 \end{question}
 \begin{answer}[a:agreement]
 We added Section~IV articulating compatibility with the Roommate Agreement by mapping veto operations to Pauli-$Z$ projections and introducing a mutual-consent handshake. A fallback to classical negotiation triggers when sarcasm parameter $\sigma>0.8$ for three consecutive iterations. See also \qref{q:model} for the gate formalism and \aref{a:noise} for robustness considerations.
+\end{answer}
+
+% --- Associate Editor ---
+\editorsection{Associate Editor}
+
+\begin{question}[q:ae-scope]
+Please clarify whether the expanded noise model required additional computation time in the revised manuscript.
+\end{question}
+\begin{answer}[a:ae-scope]
+The extended noise model adds less than 4 \% runtime overhead (dominated by colored noise synthesis). We note this in Section~III-B; it does not alter the convergence analysis referenced in \qref{q:noise}.
+\end{answer}
+
+\begin{question}[q:ae-clarity]
+Consider explicitly contrasting classical negotiation fallback triggers with the entanglement-based pathway.
+\end{question}
+\begin{answer}[a:ae-clarity]
+We inserted a clarifying paragraph in Section~IV distinguishing: (i) sarcasm-triggered fallback (thresholded on $\sigma$) and (ii) device failure fallback (watchdog timeout), both now cited when discussing the consensus update in \aref{a:hardware}.
 \end{answer}
 
 % --- Reviewer 1 ---

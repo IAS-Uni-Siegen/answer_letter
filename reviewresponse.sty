@@ -15,29 +15,50 @@
   \fancyhfoffset[R]{\dimexpr -1in - \evensidemargin\relax}
   \setlength{\headwidth}{\paperwidth}%
   % R-prefixed numbering for response letter artifacts
-  \renewcommand*{\theequation}{R\arabic{equation}}
-  \renewcommand*{\thefigure}{R\arabic{figure}}
-  \renewcommand*{\thetable}{R\arabic{table}}
+  \renewcommand*{\theequation}{A\arabic{equation}}
+  \renewcommand*{\thefigure}{A\arabic{figure}}
+  \renewcommand*{\thetable}{A\arabic{table}}
   \renewcommand*{\figurename}{Fig.}
   \renewcommand*{\tablename}{Tab.}%
 }
 
-% Reviewer (or Editor) counter (for main sections)
-\newcounter{reviewer}
-\renewcommand{\thereviewer}{\arabic{reviewer}}
+% Separate top-level counters for editors and reviewers (avoid name clash with biblatex's internal macros)
+\newcounter{rreditor}
+\newcounter{rrreviewer}
 
-% Per-reviewer comment counter
-\newcounter{revcomment}[reviewer]
-\renewcommand{\therevcomment}{\thereviewer.\arabic{revcomment}}
+% Per-editor and per-reviewer comment counters
+\newcounter{edcomment}[rreditor]
+\newcounter{revcomment}[rrreviewer]
 
-% Answer reference counter (mirrors current question number for labels)
-\newcounter{ansref}[reviewer]
-\renewcommand{\theansref}{\therevcomment}
+% Answer anchor counters (mirror current Q numbering for labels)
+\newcounter{edansref}[rreditor]
+\newcounter{revansref}[rrreviewer]
 
-% Reviewer section environment
+% Numbering representations with E / R prefixes
+\renewcommand{\theedcomment}{E\arabic{rreditor}.\arabic{edcomment}}
+\renewcommand{\therevcomment}{R\arabic{rrreviewer}.\arabic{revcomment}}
+\renewcommand{\theedansref}{E\arabic{rreditor}.\arabic{edcomment}}
+\renewcommand{\therevansref}{R\arabic{rrreviewer}.\arabic{revcomment}}
+
+% Internal context flag: E or R (defaults to R when a reviewer section starts)
+\newcommand{\RR@context}{R}
+
+% Editor section environment command
+\newcommand{\editorsection}[1]{%
+  \stepcounter{rreditor}%
+  \setcounter{edcomment}{0}%
+  \setcounter{edansref}{0}%
+  \def\RR@context{E}%
+  \section*{#1}%
+  	\thispagestyle{fancy}%
+}
+
+% Reviewer section environment command
 \newcommand{\reviewersection}[1]{%
-  \stepcounter{reviewer}%
+  \stepcounter{rrreviewer}%
   \setcounter{revcomment}{0}%
+  \setcounter{revansref}{0}%
+  \def\RR@context{R}%
   \section*{#1}%
   	\thispagestyle{fancy}%
 }
@@ -45,36 +66,33 @@
 % Question environment (boxed, label optional)
 \newenvironment{question}[1][]%
 {%
-  \refstepcounter{revcomment}%
-  % Place label early to avoid affecting paragraph indentation
+  % Step appropriate counter based on context
+  \ifthenelse{\equal{\RR@context}{E}}{\refstepcounter{edcomment}}{\refstepcounter{revcomment}}%
+  % Place label early to avoid affecting paragraph indentation (after refstepcounter)
   \ifthenelse{\equal{#1}{}}{}{\label{#1}}%
   \begin{mdframed}[backgroundcolor=gray!10, linecolor=gray!60, topline=true, bottomline=true, leftline=true, rightline=true, skipabove=0pt, skipbelow=0pt]%
-  \setlength{\parindent}{0pt}% no paragraph indent inside the box
-  	\textbf{Question~\therevcomment:}%
+  \setlength{\parindent}{0pt}%
+  \ifthenelse{\equal{\RR@context}{E}}{\textbf{Question~\theedcomment:}}{\textbf{Question~\therevcomment:}}%
   \par\noindent\ignorespaces
 }
-{
-  \end{mdframed}
-}
+{\end{mdframed}}
 
 % Answer environment (boxed, label optional)
 \newenvironment{answer}[1][]%
 {%
-  % Step an auxiliary counter to create a unique anchor for labels, but display revcomment
-  \refstepcounter{ansref}%
-  % Place label early to avoid affecting paragraph indentation
+  % Step answer anchor counter (mirrors last question number)
+  \ifthenelse{\equal{\RR@context}{E}}{\refstepcounter{edansref}}{\refstepcounter{revansref}}%
+  % Label early
   \ifthenelse{\equal{#1}{}}{}{\label{#1}}%
   \begin{mdframed}[backgroundcolor=blue!5, linecolor=blue!30, topline=true, bottomline=true, leftline=true, rightline=true, skipabove=0pt, skipbelow=0pt]%
-  \setlength{\parindent}{0pt}% no paragraph indent inside the box
-  	\textbf{Answer~\therevcomment:}%
+  \setlength{\parindent}{0pt}%
+  \ifthenelse{\equal{\RR@context}{E}}{\textbf{Answer~\theedcomment:}}{\textbf{Answer~\therevcomment:}}%
   \par\noindent\ignorespaces
 }
-{
-  \end{mdframed}
-  \vspace{1.5em}
-}
+{\end{mdframed}\vspace{1.5em}}
 
-% Reference command for questions/answers
+% Reference command for questions/answers (works for both E and R labels)
+% We do not distinguish here; the stored counter representation already includes E/R.
 \newcommand{\qref}[1]{Question~\ref{#1}}
 \newcommand{\aref}[1]{Answer~\ref{#1}}
 
@@ -86,22 +104,16 @@
 
 % Utility: short Q/A for tight comments
 \newcommand{\shortquestion}[2][]{%
-  \refstepcounter{revcomment}%
-  \textbf{Question~\therevcomment:}%
-  \ifthenelse{\equal{#1}{}}{}{%
-    \label{#1}%
-  }%
-  {#2}
-  \par
+  \ifthenelse{\equal{\RR@context}{E}}{\refstepcounter{edcomment}}{\refstepcounter{revcomment}}%
+  \ifthenelse{\equal{\RR@context}{E}}{\textbf{Question~\theedcomment:}}{\textbf{Question~\therevcomment:}}%
+  \ifthenelse{\equal{#1}{}}{}{\label{#1}}%
+  {#2}\par
 }
 \newcommand{\shortanswer}[2][]{%
-  \refstepcounter{ansref}%
-  	extbf{Answer~\therevcomment:}%
-  \ifthenelse{\equal{#1}{}}{}{%
-    \label{#1}%
-  }%
-  {#2}
-  \par
+  \ifthenelse{\equal{\RR@context}{E}}{\refstepcounter{edansref}}{\refstepcounter{revansref}}%
+  \ifthenelse{\equal{\RR@context}{E}}{\textbf{Answer~\theedcomment:}}{\textbf{Answer~\therevcomment:}}%
+  \ifthenelse{\equal{#1}{}}{}{\label{#1}}%
+  {#2}\par
 }
 
 \makeatletter
