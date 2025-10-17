@@ -7,6 +7,7 @@
 \RequirePackage{xcolor}
 \RequirePackage{mdframed}
 \RequirePackage{fancyhdr}
+\RequirePackage[backend=biber,style=ieee]{biblatex}
 % Ensure enough space for the header (set after all packages)
 \AtBeginDocument{%
   \setlength{\headheight}{14pt}% ensure enough space for header/foot
@@ -14,12 +15,16 @@
   \fancyhfoffset[L]{\dimexpr -1in - \oddsidemargin\relax}
   \fancyhfoffset[R]{\dimexpr -1in - \evensidemargin\relax}
   \setlength{\headwidth}{\paperwidth}%
-  % R-prefixed numbering for response letter artifacts
+  % A-prefixed numbering for response letter artifacts
   \renewcommand*{\theequation}{A\arabic{equation}}
   \renewcommand*{\thefigure}{A\arabic{figure}}
   \renewcommand*{\thetable}{A\arabic{table}}
   \renewcommand*{\figurename}{Fig.}
   \renewcommand*{\tablename}{Tab.}%
+  % A-prefixed citation labels for bibliography
+  \@ifpackageloaded{biblatex}{%
+    \DeclareFieldFormat{labelnumber}{A#1}%
+  }{}%
 }
 
 % Separate top-level counters for editors and reviewers (avoid name clash with biblatex's internal macros)
